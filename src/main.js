@@ -30,7 +30,7 @@ document.addEventListener("keyup", function (e) {
 
 const FOV = Math.PI / 3;
 const HALF_FOV = FOV / 2;
-const NUM_RAYS = 120;
+const NUM_RAYS = 60;
 const MAX_DEPTH = 600;
 const TILE = 50;
 const DELTA_ANGLE = FOV / NUM_RAYS;
@@ -55,7 +55,7 @@ Player.prototype.draw = function () {
   ctx.beginPath();
   ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
   ctx.fillStyle = "green";
-  ctx.lineWidth = 5;
+  ctx.lineWidth = 1;
   ctx.fill();
 
   // dir ray
@@ -151,12 +151,14 @@ function rayCasting(px, py, pangle) {
     for (let depth = 0; depth < MAX_DEPTH; depth++) {
       let x = px + depth * cos_a;
       let y = py + depth * sin_a;
-      ctx.strokeStyle = "#ff0000";
-      ctx.beginPath();
-      ctx.moveTo(px, py);
-      ctx.lineTo(x, y);
-      ctx.stroke();
-
+      if (ray % 4 == 0) {
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = "#ff0000";
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+      }
       let dy = parseInt(parseInt(y / m.tileSize) * m.tileSize);
       let dx = parseInt(parseInt(x / m.tileSize) * m.tileSize);
       //console.log(dy, dx);
