@@ -1,18 +1,14 @@
-let numTimesClicked = 0;
+function game() {
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  window.document.body.appendChild(canvas);
 
-function win() {
-  alert("You win!");
-  reset();
+  return {
+    canvas,
+    ctx,
+  };
 }
 
-function reset() {
-  numTimesClicked = 0;
-}
+let g = game();
 
-function click() {
-  numTimesClicked++;
-  console.log(`You've been clicked! 100`);
-  if (numTimesClicked === 10) win();
-}
-
-export default click;
+export default g;
