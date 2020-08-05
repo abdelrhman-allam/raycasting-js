@@ -70,10 +70,11 @@ function Map() {
 
 ## Resourcs
 
+- Russian Youtuber [Standalone Coder](https://www.youtube.com/watch?v=SmKBsArp2dI)
 - Youtube and curiosity
 
 ## And more Resourcs
 
-- YouTube https://www.youtube.com/results?search_query=ray+casting
+- YouTube [here](https://www.youtube.com/results?search_query=ray+casting)
 - The Coding Train
 - 3DSage

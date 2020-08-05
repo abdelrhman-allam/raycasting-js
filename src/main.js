@@ -30,18 +30,18 @@ document.addEventListener("keyup", function (e) {
 
 const FOV = Math.PI / 3;
 const HALF_FOV = FOV / 2;
-const NUM_RAYS = 60;
+const NUM_RAYS = 300;
 const MAX_DEPTH = 600;
 const TILE = 50;
 const DELTA_ANGLE = FOV / NUM_RAYS;
 const DIST = NUM_RAYS / (2 * Math.tan(HALF_FOV));
-const PROJ_COEFF = 3 * DIST * TILE;
+const PROJ_COEFF = DIST * TILE;
 const SCALE = canvas.width / NUM_RAYS;
 const HALF_HEIGHT = canvas.height / 2;
 const HALF_WIDTH = canvas.width / 2;
 function Player() {
-  this.x = canvas.width / 2;
-  this.y = canvas.height / 2;
+  this.x = 100; //canvas.width / 2;
+  this.y = 100; //canvas.height / 2;
   this.dx = 0.1;
   this.dy = 0.1;
   this.a = 0;
@@ -92,10 +92,10 @@ Player.prototype.update = function () {
   }
 
   if (input.ArrowLeft == true) {
-    this.a -= 0.2;
+    this.a -= 0.3;
   }
   if (input.ArrowRight == true) {
-    this.a += 0.2;
+    this.a += 0.3;
   }
 };
 
@@ -104,10 +104,10 @@ function Map() {
   this.grid = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1],
-    [1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1],
+    [1, 0, 0, 3, 0, 0, 0, 2, 0, 0, 0, 1],
+    [1, 0, 0, 2, 4, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
   ];
@@ -116,8 +116,8 @@ function Map() {
 
   for (let i = 0; i < this.grid.length; i++) {
     for (let j = 0; j < this.grid[i].length; j++) {
-      if (this.grid[i][j] == 1)
-        this.worldMap.push([i * this.tileSize, j * this.tileSize]);
+      if (this.grid[i][j] != 0)
+        this.worldMap.push([j * this.tileSize, i * this.tileSize]);
     }
   }
 }
@@ -126,7 +126,7 @@ Map.prototype.draw = function () {
   ctx.strokeStyle = "#ffffff";
   for (let i = 0; i < this.grid.length; i++) {
     for (let j = 0; j < this.grid[i].length; j++) {
-      if (this.grid[i][j] == 1)
+      if (this.grid[i][j] != 0)
         ctx.strokeRect(
           j * this.tileSize,
           i * this.tileSize,
@@ -140,46 +140,64 @@ Map.prototype.draw = function () {
 let p = new Player();
 let m = new Map();
 
+function mapping(x, y) {
+  return [parseInt(x / TILE) * TILE, parseInt(y / TILE) * TILE];
+}
 function rayCasting(px, py, pangle) {
-  //tx.lineWidth = 1;
-
+  [xm, ym] = mapping(px, py);
   let current_angle = pangle - HALF_FOV;
   for (let ray = 0; ray < NUM_RAYS; ray++) {
     let sin_a = Math.sin(current_angle);
     let cos_a = Math.cos(current_angle);
-    for (let depth = 0; depth < MAX_DEPTH; depth++) {
-      let x = px + depth * cos_a;
-      let y = py + depth * sin_a;
-      if (ray % 4 == 0) {
-        ctx.beginPath();
-        ctx.lineWidth = 1;
-        ctx.strokeStyle = "#ff0000";
-        ctx.moveTo(px, py);
-        ctx.lineTo(x, y);
-        ctx.stroke();
-      }
-      let dy = parseInt(parseInt(y / m.tileSize) * m.tileSize);
-      let dx = parseInt(parseInt(x / m.tileSize) * m.tileSize);
-      //console.log(dy, dx);
-      if (m.worldMap.some((c) => c[0] == dy && c[1] == dx)) {
-        let color = parseInt(255 / (1 + depth * depth * 0.0001));
-        depth = depth * Math.cos(pangle - current_angle);
-        let projHeight = PROJ_COEFF / depth;
+    sin_a = sin_a == 0 ? 0.000001 : sin_a;
+    cos_a = cos_a == 0 ? 0.000001 : cos_a;
 
-        ctx3d.fillStyle = `rgba(${color / 3},${color},${color / 2},1)`;
-
-        ctx3d.fillRect(
-          ray * SCALE,
-          HALF_HEIGHT - projHeight / 2,
-          SCALE,
-          projHeight
-        );
-        ctx3d.fill();
-
+    // verticals
+    let x, y, dx, dy, depth, depth_v, depth_h;
+    [x, dx] = dx = cos_a >= 0 ? [xm + TILE, 1] : [xm, -1];
+    for (let i = 0; i <= canvas.width; i += TILE) {
+      depth_v = (x - px) / cos_a;
+      y = py + depth_v * sin_a;
+      let t = mapping(x + dx, y);
+      if (m.worldMap.some((c) => c[0] == t[0] && c[1] == t[1])) {
         break;
-        // draw ray
       }
+      x += dx * TILE;
     }
+
+    // horizantals
+    [y, dy] = sin_a >= 0 ? [ym + TILE, 1] : [ym, -1];
+
+    for (let i = 0; i <= canvas.width; i += TILE) {
+      depth_h = (y - py) / sin_a;
+      x = px + depth_h * cos_a;
+      t = mapping(x, dy + y);
+      if (m.worldMap.some((c) => c[0] == t[0] && c[1] == t[1])) {
+        break;
+      }
+      y += dy * TILE;
+    }
+
+    ctx.beginPath();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = "#ff0000";
+    ctx.moveTo(px, py);
+    ctx.lineTo(x, y);
+    ctx.stroke();
+
+    // projection 3D
+    depth = depth_v < depth_h ? depth_v : depth_h;
+    depth *= Math.cos(pangle - current_angle);
+    let projHeight = PROJ_COEFF / depth;
+    let color = parseInt(255 / (1 + depth * depth * 0.0002));
+    ctx3d.fillStyle = `rgba(${color / 1},${color},${color / 2},1)`;
+    ctx3d.fillRect(
+      ray * SCALE,
+      parseInt(HALF_HEIGHT - projHeight / 2),
+      SCALE,
+      projHeight
+    );
+    ctx3d.fill();
     current_angle += DELTA_ANGLE;
   }
 }
@@ -211,7 +229,7 @@ let loop = () => {
   ctx3d.clearRect(0, 0, canvas3d.width, canvas3d.height);
   draw();
 
-  setTimeout(loop, 1000 / 45);
+  setTimeout(loop, 1000 / 12);
 };
 
 loop();
