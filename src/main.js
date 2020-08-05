@@ -120,7 +120,6 @@ function Map() {
         this.worldMap.push([i * this.tileSize, j * this.tileSize]);
     }
   }
-  console.log(this.worldMap);
 }
 
 Map.prototype.draw = function () {
@@ -152,9 +151,9 @@ function rayCasting(px, py, pangle) {
       let x = px + depth * cos_a;
       let y = py + depth * sin_a;
       if (ray % 4 == 0) {
+        ctx.beginPath();
         ctx.lineWidth = 1;
         ctx.strokeStyle = "#ff0000";
-        ctx.beginPath();
         ctx.moveTo(px, py);
         ctx.lineTo(x, y);
         ctx.stroke();
