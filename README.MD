@@ -1,4 +1,4 @@
-# RayCasting Example with JS :flashlight:
+# RayCasting Example with JS :flashlight: 🤗
 
 > A humbel implementation for simple raycasting projection (90`s, The world in the famous video game Wolfenstein 3D), and because it is part of my childhood, and empower my skills with JS, Math, Math, and Math...
 
@@ -6,8 +6,12 @@
 
 > It uses 2 canvas
 
-- Left canvas for display the updown view for the player and maze
-- Right canvas for project the 3d from the `raycast()` function
+- 🎥 Left canvas for display the updown view for the player and maze
+- 🎥 Right canvas for project the 3d from the `raycast()` function
+- 🏃 For moving `w => up`, `s => down`, `a => left` and `d => right`
+- 🤸 For rotating `left` and `right` arrows
+- 🚣 No collision detection so you can go through walls (super man or woman)
+- 🚀 [Demo](https://abdelrhman-allam.github.io/raycasting-js/index.html)
 
 ### Clone
 
@@ -66,7 +70,7 @@ function Map() {
 
 ## Resourcs
 
-## Alot of Resourcs
+## And more Resourcs
 
 - YouTube https://www.youtube.com/results?search_query=ray+casting
 - The Coding Train
