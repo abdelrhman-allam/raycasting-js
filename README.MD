@@ -1,6 +1,6 @@
 # RayCasting Example with JS :flashlight: 🤗
 
-> A humbel implementation for simple raycasting projection (90`s, The world in the famous video game Wolfenstein 3D), and because it is part of my childhood, and empower my skills with JS, Math, Math, and Math...
+> A humbel implementation for simple raycasting projection (90`s, The world in the famous video game Wolfenstein 3D), and because it is part of my childhood, and empower my skills with JS, Math, Math, and Math...curiosity to learn how to build it again
 
 ![Simple Demo](public/images/simple_demo.gif)
 
@@ -69,6 +69,8 @@ function Map() {
 ```
 
 ## Resourcs
+
+- Youtube and curiosity
 
 ## And more Resourcs
 
