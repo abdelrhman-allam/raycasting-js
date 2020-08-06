@@ -45,7 +45,7 @@ function Player() {
   this.dx = 0.1;
   this.dy = 0.1;
   this.a = 0;
-  this.speed = 5;
+  this.speed = 2;
   this.radius = 5;
 }
 Player.prototype.getPos = function () {
@@ -59,15 +59,15 @@ Player.prototype.draw = function () {
   ctx.fill();
 
   // dir ray
-  // ctx.beginPath();
-  // ctx.strokeStyle = "#ff0000";
-  // ctx.lineWidth = 1;
-  // ctx.moveTo(this.x, this.y);
-  // ctx.lineTo(
-  //   this.x * canvas.width * Math.cos(this.a),
-  //   this.y * canvas.height * Math.sin(this.a)
-  // );
-  // ctx.stroke();
+  ctx.beginPath();
+  ctx.strokeStyle = "#ff0000";
+  ctx.lineWidth = 1;
+  ctx.moveTo(this.x, this.y);
+  ctx.lineTo(
+    this.x * canvas.width * Math.cos(this.a),
+    this.y * canvas.height * Math.sin(this.a)
+  );
+  ctx.stroke();
 };
 
 Player.prototype.update = function () {
@@ -92,10 +92,10 @@ Player.prototype.update = function () {
   }
 
   if (input.ArrowLeft == true) {
-    this.a -= 0.3;
+    this.a -= 0.1;
   }
   if (input.ArrowRight == true) {
-    this.a += 0.3;
+    this.a += 0.1;
   }
 };
 
@@ -165,6 +165,13 @@ function rayCasting(px, py, pangle) {
       x += dx * TILE;
     }
 
+    ctx.beginPath();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = "#ff0000";
+    ctx.moveTo(px, py);
+    ctx.lineTo(x + dx, y + dy);
+    ctx.stroke();
+
     // horizantals
     [y, dy] = sin_a >= 0 ? [ym + TILE, 1] : [ym, -1];
 
@@ -178,12 +185,12 @@ function rayCasting(px, py, pangle) {
       y += dy * TILE;
     }
 
-    ctx.beginPath();
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = "#ff0000";
-    ctx.moveTo(px, py);
-    ctx.lineTo(x, y);
-    ctx.stroke();
+    // ctx.beginPath();
+    // ctx.lineWidth = 1;
+    // ctx.strokeStyle = "#ff0000";
+    // ctx.moveTo(px, py);
+    // ctx.lineTo(x + dx, y + dy);
+    // ctx.stroke();
 
     // projection 3D
     depth = depth_v < depth_h ? depth_v : depth_h;
@@ -228,8 +235,8 @@ let loop = () => {
 
   ctx3d.clearRect(0, 0, canvas3d.width, canvas3d.height);
   draw();
-
-  setTimeout(loop, 1000 / 12);
+  requestAnimationFrame(loop);
+  // setTimeout(loop, 1000 / 60);
 };
 
 loop();
